@@ -1,0 +1,135 @@
+---
+title: "Quiz 2"
+author: "Tal Bracha_209008564"
+output:
+  slidy_presentation: default
+  ioslides_presentation: default
+---
+
+
+# Part A
+
+##
+ 
+Q1
+
+D. All of the above
+
+##
+
+Q2
+
+A. ‘select’
+
+##
+
+Q3
+
+B. filter
+
+
+# Part B
+
+##
+
+```{r}
+
+library(dplyr)
+library(tidyverse)
+Marvel_DC = read.csv("Marvel_DC_imdb.csv")
+
+```
+
+
+##
+
+Q1
+
+```{r}
+marvel = Marvel_DC %>%
+  filter(Category == "Marvel")
+
+
+DC = Marvel_DC %>%
+  filter(Category == "DC")
+```
+
+
+##
+
+Q2
+
+```{r}
+rating_marvel = marvel %>%
+  filter(Rating %in% c("TV-PG", "TV-14")) %>%
+  select(Rating, everything())
+
+```
+
+##
+
+Q3
+
+```{r}
+movie_score_marvel = rating_marvel %>%
+  group_by(Movie) %>%
+  summarise(count = n(), mean_score = mean(IMDB_Score))
+
+```
+
+##
+  
+Q4
+
+```{r}
+rating_dc = DC %>%
+  filter(Rating %in% c("TV-PG", "TV-14")) %>%
+  select(Rating, everything())
+
+movie_score_dc = rating_dc %>%
+  group_by(Movie) %>%
+  summarise(count = n(), mean_score = mean(IMDB_Score))
+
+top_10_marvel = movie_score_marvel %>%
+  top_n(10) %>%
+  arrange(desc(mean_score))
+
+
+top_10_DC = movie_score_dc %>%
+  top_n(10) %>%
+  arrange(desc(mean_score))
+  
+```
+
+
+##
+  
+Q5
+
+```{r}
+dc_vs_marvel = bind_rows(top_10_DC, top_10_marvel) %>%
+  arrange(desc(mean_score))
+  
+
+```
+
+##
+
+Q6
+
+```{r}
+library(ggplot2)
+
+ggplot(data = dc_vs_marvel) +
+  geom_point(mapping = aes(x= count, y= mean_score), size = 5)
+```
+
+
+
+
+
+
+
+
+
+
